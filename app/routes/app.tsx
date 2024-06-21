@@ -11,7 +11,17 @@ import { authenticate } from "../shopify.server";
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
+  const { admin, session } =  await authenticate.admin(request);
+  const theme = new admin.rest.resources.Theme({
+    session,
+    fromData: {
+      name: 'Test',
+      src: 'test',
+      role: 'unpublished'
+    }
+  });
+
+  console.log({ theme })
 
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
